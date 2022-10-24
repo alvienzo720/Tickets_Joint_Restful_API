@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Ticket
+from .serializers import TicektSerializer
 # Create your views here.
 
 
@@ -14,9 +15,11 @@ def endpoints(request):
 @api_view(['GET'])
 def ticket_list(request):
     tickets = Ticket.objects.all()
-    return Response(tickets)
+    serializer = TicektSerializer(tickets, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def ticket_details(request, ticketname):
-    data = ticketname
-    return Response(data)
+    ticket = Ticket.objects.get(ticket_name=ticketname)
+    seralizer = TicektSerializer(ticket, many=False)
+    return Response(seralizer.data)
