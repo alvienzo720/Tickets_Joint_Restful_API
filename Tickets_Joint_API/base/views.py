@@ -1,20 +1,29 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Ticket
+from .serializers import TicektSerializer
 # Create your views here.
 
 
-
+@api_view(['GET'])
 def endpoints(request):
     data = ['/tickets', 'tickets/:ticketname']
-    return JsonResponse(data, safe=False)
+    return Response(data)
 
-
+@api_view(['GET'])
 def ticket_list(request):
-    data = ['Nyege-Nyege', 'Bayimba-Festival', 'Roast&Rhyme']
-    return JsonResponse(data, safe=False)
+    query = request.GET.get('query')
+    
+    if query == None:
+        query = ''
+    tickets = Ticket.objects.filter(ticket_name__icontains=query)
+    serializer = TicektSerializer(tickets, many=True)
+    return Response(serializer.data)
 
-
+@api_view(['GET'])
 def ticket_details(request, ticketname):
-    data = ticketname
-    return JsonResponse(data, safe=False)
+    ticket = Ticket.objects.get(ticket_name=ticketname)
+    seralizer = TicektSerializer(ticket, many=False)
+    return Response(seralizer.data)
