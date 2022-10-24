@@ -14,7 +14,11 @@ def endpoints(request):
 
 @api_view(['GET'])
 def ticket_list(request):
-    tickets = Ticket.objects.all()
+    query = request.GET.get('query')
+    
+    if query == None:
+        query = ''
+    tickets = Ticket.objects.filter(ticket_name__icontains=query)
     serializer = TicektSerializer(tickets, many=True)
     return Response(serializer.data)
 
