@@ -14,12 +14,15 @@ class Ticket(models.Model):
 
 
 class Client(models.Model):
-    firstname = models.CharField(max_length=200, null=True)
-    lastname = models.CharField(max_length=200, null=True)
+    fullname = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200, null=True)
     personal_id = models.CharField(max_length=200, null=True)
+    company = models.CharField(max_length=200, null=True)
 
 
     def __str__(self):
-        return self.firstname
+        return self.fullname + " , " + self.company
+
+
+        
 
