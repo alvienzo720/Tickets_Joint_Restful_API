@@ -11,3 +11,15 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.ticket_name
+
+
+class Client(models.Model):
+    firstname = models.CharField(max_length=200, null=True)
+    lastname = models.CharField(max_length=200, null=True)
+    email = models.CharField(max_length=200, null=True)
+    personal_id = models.CharField(max_length=200, null=True)
+
+
+    def __str__(self):
+        return self.firstname
+
