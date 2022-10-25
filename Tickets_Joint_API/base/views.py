@@ -14,7 +14,7 @@ def endpoints(request):
     data = ['/tickets', 'tickets/:ticketname']
     return Response(data)
 
-    
+
 class TicketList(APIView):
     def get(self, request):
         query = request.GET.get('query')
@@ -35,39 +35,22 @@ class TicketList(APIView):
         return Response(serializer.data)
 
 
-
-# @api_view(['GET','POST'])
-# def ticket_list(request):
-#     # handles GET requests
-#     if request.method == 'GET':
-#         query = request.GET.get('query')
-        
-#         if query == None:
-#             query = ''
-#         tickets = Ticket.objects.filter(ticket_name__icontains=query)
-#         serializer = TicektSerializer(tickets, many=True)
-#         return Response(serializer.data)
-
-#     if request.method == 'POST':
-#         ticket = Ticket.objects.create(
-#             ticket_name=request.data['ticket_name'],
-#             price=request.data['price'],
-#             date=request.data['date'],
-#             ticket_owner=request.data['ticket_owner']
-#             )
-#         serializer = TicektSerializer(ticket, many=False)
-#         return Response(serializer.data)
-
-
-
 class TicketDetails(APIView):
+
+    def get_object(self, ticketname):
+        try:
+            return Ticket.objects.get(ticket_name=ticketname)
+        except Ticket.DoesNotExisit:
+            raise JsonResponse('Ticket Dosent Exist ! ')
+
     def get(self, request, ticketname):
-        ticket = Ticket.objects.get(ticket_name=ticketname)
+        ticket = self.get_object(ticketname)
         serializer = TicektSerializer(ticket, many=False)
         return Response(serializer.data)
 
 
     def put(self, request, ticketname):
+        ticket = self.get_object(ticketname)
         ticket.ticket_name == request.data['ticket_name']
         ticket.price = request.data['price']
         ticket.data = request.data['date']
@@ -79,36 +62,10 @@ class TicketDetails(APIView):
 
 
     def delete(self, request, ticketname):
+        ticket = self.get_object(ticketname)
         ticket.delete()
         return Response('Ticket Deleted')
         
-
-
-
-
-
-
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def ticket_details(request, ticketname):
-#     ticket = Ticket.objects.get(ticket_name=ticketname)
-#     if request.method == 'GET':
-#         seralizer = TicektSerializer(ticket, many=False)
-#         return Response(seralizer.data)
-
-#     if request.method == 'PUT':
-#         ticket.ticket_name == request.data['ticket_name']
-#         ticket.price = request.data['price']
-#         ticket.data = request.data['date']
-#         ticket.ticket_owner = request.data['ticket_owner']
-#         ticket.save()
-
-#         seralizer = TicektSerializer(ticket, many=False)
-#         return Response((seralizer.data))
-
-#     if request.method == 'DELETE':
-#         ticket.delete()
-#         return Response('Ticket Deleted')
-
 
 
 
